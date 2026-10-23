@@ -3,7 +3,7 @@ const status=document.querySelector('#status');
 const canvas=document.createElement('canvas');document.body.appendChild(canvas);
 let app;
 try{
- app=new Application(canvas,{graphicsDeviceOptions:{antialias:true}});
+ app=new Application(canvas,{graphicsDeviceOptions:{antialias:false, preferWebGl2:false, powerPreference:'low-power'}});
  app.setCanvasFillMode(FILLMODE_FILL_WINDOW);
  app.setCanvasResolution(RESOLUTION_AUTO);
  app.start();
@@ -33,4 +33,4 @@ try{
  canvas.addEventListener('pointermove',e=>{if(!dragging)return;azimuth-=(e.clientX-prevX)*.008;elevation=Math.max(-1.45,Math.min(1.45,elevation+(e.clientY-prevY)*.008));prevX=e.clientX;prevY=e.clientY;update();});
  canvas.addEventListener('wheel',e=>{e.preventDefault();distance=Math.max(radius*.08,Math.min(radius*30,distance*Math.exp(e.deltaY*.001)));update();},{passive:false});
  status.textContent='COLMAP GLB lastet. Interaktiv punktsky tilgjengelig.';
- }catch(err){status.textContent='Kunne ikke åpne 3D-scenen: '+(err?.message||String(err));status.style.color='#ffa8a8';console.error(err);}
+ }catch(err){const msg=err?.message||String(err);status.textContent='3D-visning utilgjengelig: '+msg+'. Bruk originalbildene eller prøv Chrome/Edge med maskinvareakselerasjon aktivert.';status.style.color='#ffa8a8';const a=document.createElement('a');a.href='../';a.textContent='Åpne fotovisningen';a.style.display='block';a.style.marginTop='8px';status.after(a);console.error(err);}
